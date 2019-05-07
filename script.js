@@ -1,5 +1,3 @@
-
-
 //Starting Gif Category buttons
 var categories = ["Dogs", "Chris Farley", "Star Wars", "Sloth"];
 
@@ -8,15 +6,14 @@ function displayGifs() {
 
     var category = $(this).attr("data-name");
 
-    var apiKey = "um450KSCPU0N2DvYWIYBhflCy4GX34Mr"
+
 
     //Number of gifs returned
-    var qty = 1;
+    var qty = 10;
+    var apiKey = "um450KSCPU0N2DvYWIYBhflCy4GX34Mr"
     var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + category + "&api_key=" + apiKey + "&limit=" + qty;
-    var i = 0;
-    // Creates AJAX call for the specific category button being clicked
-    
-   
+
+
 
 
     $.ajax({
@@ -26,38 +23,46 @@ function displayGifs() {
         // Creates a div to hold the category
         let wrapper = $("<div>");
         // Retrieves the Rating Data
-       
-        let rating = response.data[i].rating;
-        // Creates an element to have the rating displayed
-        let ratingElement = $("<p>");
-        // Displays the rating
-        ratingElement.text(rating);
-        wrapper.prepend(ratingElement);
 
-    
-        
-        // Creates an element to hold the image
-        var gifElement = $("<img>");
-        var gifUrl = response.data[i].images.fixed_height_still.url;
-        var gifAnimate = response.data[i].images.fixed_height.url;
-        var gifStill = response.data[i].images.fixed_height_still.url;
-        // Appends the image
-        gifElement.attr('src', gifUrl);
-        gifElement.attr('data-still', gifStill);
-        gifElement.attr('data-animate', gifAnimate);
-        gifElement.attr('data-state', 'still');
-        gifElement.attr('class', 'gif');
-        wrapper.append(gifElement);
-        // Puts the gif above other gifs
-        $("#category-view").prepend(wrapper);
+        for (var i = 0; i < qty; i++) {
+           
+             //Title Data
+            var titleElement = $("<h5>");
+            var gifTitle = response.data[i].title;
+            titleElement.text(gifTitle);
+            wrapper.append(titleElement);
 
-
+            //Gif Data
+            // Creates an element to hold the image
+            var gifElement = $("<img>");
+            var gifUrl = response.data[i].images.fixed_height_still.url;
+            var gifAnimate = response.data[i].images.fixed_height.url;
+            var gifStill = response.data[i].images.fixed_height_still.url;
+            gifElement.attr('src', gifUrl);
+            gifElement.attr('data-still', gifStill);
+            gifElement.attr('data-animate', gifAnimate);
+            gifElement.attr('data-state', 'still');
+            gifElement.attr('class', 'gif');
+            wrapper.append(gifElement);
+            
+            //Rating Data
+            let rating = response.data[i].rating.toUpperCase();
+            // Creates an element to have the rating displayed
+            let ratingElement = $("<p>");
+            // Displays the rating
+            ratingElement.text("Gif Rating: " + rating);
+            wrapper.append(ratingElement);
+           
+            // Puts the gif above other gifs
+            $("#category-view").prepend(wrapper);
+        }
+        //Gif animate, pause, start function
         $(".gif").on("click", function () {
 
             let animateUrl = $(this).attr("data-animate");
             let stillUrl = $(this).attr("data-still");
             let state = $(this).attr("data-state");
-        
+
             if (state == "still") {
                 $(this).attr("src", animateUrl),
                     $(this).attr("data-state", "animating")
@@ -73,7 +78,7 @@ function displayGifs() {
 
 }
 
-// Function for displaying category data
+// Function for displaying category buttons
 function renderButtons() {
 
     // Deletes the gif buttons prior to adding new buttons
@@ -96,7 +101,7 @@ function renderButtons() {
     }
 }
 
-$("#add-category").on("click", function(event) {
+$("#add-category").on("click", function (event) {
     event.preventDefault();
     // This line of code will grab the input from the textbox
     var categoryAdd = $("#category-input").val().trim();
@@ -114,4 +119,4 @@ $(document).on("click", ".category", displayGifs);
 renderButtons();
 
 
-//Gif animate, pause, start function
+
